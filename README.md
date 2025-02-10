@@ -1,8 +1,5 @@
 # poc-streamline-sendgrid
 
-Sure, here's a README file for your POC:
-
----
 
 # Email Sender POC
 
