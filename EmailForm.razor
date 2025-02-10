@@ -1,0 +1,66 @@
+@page "/email-form"
+@inject HttpClient Http
+
+<EditForm Model="@emailData" OnValidSubmit="@HandleValidSubmit">
+  <DataAnnotationsValidator />
+  <ValidationSummary />
+
+  <div>
+    <label for="claimNumber">Claim Number:</label>
+    <InputText id="claimNumber" @bind-Value="emailData.ClaimNumber" />
+  </div>
+
+  <div>
+    <label for="toEmail">To (email):</label>
+    <InputText id="toEmail" @bind-Value="emailData.To" />
+  </div>
+
+  <div>
+    <label for="phn">PHN:</label>
+    <InputText id="phn" @bind-Value="emailData.PHN" />
+  </div>
+
+  <div>
+    <label for="template">Template:</label>
+    <InputSelect id="template" @bind-Value="emailData.TemplateId">
+      @foreach (var template in templates)
+      {
+        <option value="@template.Id">@template.Name</option>
+      }
+    </InputSelect>
+  </div>
+
+  <button type="submit">Send</button>
+</EditForm>
+
+@code {
+  private EmailData emailData = new EmailData();
+  private List<Template> templates = new List<Template>
+  {
+    new Template { Id = "template1", Name = "Template 1" },
+    new Template { Id = "template2", Name = "Template 2" }
+  };
+
+  private async Task HandleValidSubmit()
+  {
+    var response = await Http.PostAsJsonAsync("/api/email/send", emailData);
+    if (response.IsSuccessStatusCode)
+    {
+      // Redirect to confirmation page
+    }
+  }
+
+  public class EmailData
+  {
+    public string ClaimNumber { get; set; }
+    public string To { get; set; }
+    public string PHN { get; set; }
+    public string TemplateId { get; set; }
+  }
+
+  public class Template
+  {
+    public string Id { get; set; }
+    public string Name { get; set; }
+  }
+}
